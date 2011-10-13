@@ -30,6 +30,7 @@
   var pal;
   var loopBtn;
   var loopValueTx;
+  var dissolveValueTx;
 
   function createLoop(thisObj)
   {
@@ -42,8 +43,14 @@
       app.beginUndoGroup(scriptName);
 
       var loopValue = parseInt(loopValueTx.text);
-      if (loopValue == null)
+      if (isNaN(loopValue)) {
+        Window.alert("Please enter a valid loop point.");
         return;
+      }
+
+      var dissolveValue = parseInt(dissolveValueTx.text)
+      if (isNaN(dissolveValue))
+        dissolveValue = 1.5;
 
       var blendLayer = activeComp.layer(1);
       blendLayer.duplicate();
@@ -56,7 +63,7 @@
       blendLayer.startTime =  outpoint - loopValue;
 
       // Set work area
-      activeComp.workAreaStart = loopValue; // + activeComp.frameDuration;
+      activeComp.workAreaStart = loopValue;
       activeComp.workAreaDuration = (outpoint - loopValue) -  activeComp.frameDuration;
 
       // Grab the top layer
@@ -67,13 +74,13 @@
             var effectBase = effectsGroup.addProperty("Blend");
             if (effectBase != null) {
               // Set some keyframes
+              // TODO: Easy Ease the keyframes
               effectBase.property("ADBE Blend-0001").setValue(2);
-              effectBase.property("ADBE Blend-0003").setValueAtTime((loopLayer.outPoint - 1.5), 1);
+              effectBase.property("ADBE Blend-0003").setValueAtTime((loopLayer.outPoint - dissolveValue), 1);
               effectBase.property("ADBE Blend-0003").setValueAtTime(loopLayer.outPoint, 0);
 
               var loopMarker = new MarkerValue("Loop Point");
               loopLayer.property("Marker").setValueAtTime(loopValue, loopMarker);
-
             }
         }
 
@@ -86,14 +93,13 @@
   }
 
   // Create dialog
+  function createUI(thisObj)
+  {
+    pal = (thisObj instanceof Panel) ? thisObj : new Window("palette", "Waffle", [100,100,380,245], {resizeable:true});
 
-	function createUI(thisObj)
-	{
-		pal = (thisObj instanceof Panel) ? thisObj : new Window("palette", "Waffle", [100,100,380,245], {resizeable:true});
-		
-		if (pal != null) {
+    if (pal != null) {
       //panel = win.add("panel", [25,15,255,130], "WafflePanel");
-
+      //TODO: Rework the interface.
       loopTxt = pal.add("statictext", [20, 20, 95, 40], "Loop Point:");
       loopValueTx = pal.add('edittext', [loopTxt.bounds.right + 5, 20, 150, 40]);
 
@@ -105,17 +111,17 @@
       loopBtn.onClick = function()
       {
         createLoop(this);
-        clearOutput();
-        writeLn("Loop created.");
+        //clearOutput();
+        //writeLn("Loop created.");
 
       };
     }
 
     return pal;
-	}
-	
-	var win=createUI(this);
-	if(win instanceof Window) win.show();
+  }
+
+  var win=createUI(this);
+  if(win instanceof Window) win.show();
 
 }
 // Hippo!
