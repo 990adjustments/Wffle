@@ -44,7 +44,7 @@
 
       var loopValue = parseInt(loopValueTx.text);
       if (isNaN(loopValue)) {
-        Window.alert("Please enter a valid loop point.");
+        Window.alert("Please enter a valid loop point.", "Waffle");
         return;
       }
 
@@ -52,44 +52,47 @@
       if (isNaN(dissolveValue))
         dissolveValue = 1.5;
 
-      var blendLayer = activeComp.layer(1);
-      blendLayer.duplicate();
-      blendLayer.enabled = false;
+      if (activeComp.numLayers == 1) {
+        var blendLayer = activeComp.layer(1);
+        blendLayer.duplicate();
+        blendLayer.enabled = false;
 
-      var outpoint = blendLayer.outPoint
-      // Subtract one frame from loop point given
-      var loopPoint = loopValue - activeComp.frameDuration;
-      blendLayer.inPoint = loopPoint
-      blendLayer.startTime =  outpoint - loopValue;
+        var outpoint = blendLayer.outPoint
+        // Subtract one frame from loop point given
+        var loopPoint = loopValue - activeComp.frameDuration;
+        blendLayer.inPoint = loopPoint
+        blendLayer.startTime =  outpoint - loopValue;
 
-      // Set work area
-      activeComp.workAreaStart = loopValue;
-      activeComp.workAreaDuration = (outpoint - loopValue) -  activeComp.frameDuration;
+        // Set work area
+        activeComp.workAreaStart = loopValue;
+        activeComp.workAreaDuration = (outpoint - loopValue) -  activeComp.frameDuration;
 
-      // Grab the top layer
-      var loopLayer = activeComp.layer(1);
-      var effectsGroup = loopLayer.property("ADBE Effect Parade");
-      if (effectsGroup != null) {
-        if (effectsGroup.canAddProperty("Blend")) {
+        // Grab the top layer
+        var loopLayer = activeComp.layer(1);
+        var effectsGroup = loopLayer.property("ADBE Effect Parade");
+        if (effectsGroup != null) {
+          if (effectsGroup.canAddProperty("Blend")) {
             var effectBase = effectsGroup.addProperty("Blend");
             if (effectBase != null) {
               // Set some keyframes
-              // TODO: Easy Ease the keyframes
               effectBase.property("ADBE Blend-0001").setValue(2);
               effectBase.property("ADBE Blend-0003").setValueAtTime((loopLayer.outPoint - dissolveValue), 1);
               effectBase.property("ADBE Blend-0003").setValueAtTime(loopLayer.outPoint, 0);
+              effectBase.property("ADBE Blend-0003").setInterpolationTypeAtKey(1,KeyframeInterpolationType.BEZIER);
+              effectBase.property("ADBE Blend-0003").setInterpolationTypeAtKey(2,KeyframeInterpolationType.BEZIER);
 
               var loopMarker = new MarkerValue("Loop Point");
               loopLayer.property("Marker").setValueAtTime(loopValue, loopMarker);
             }
+          }
         }
+      } else
+          Window.alert("Script only works with one layer in the composition.");
 
       app.endUndoGroup();
 
-      } else
+    } else
         alert("Please select an active comp to use this script.");
-    }
-
   }
 
   // Create dialog
@@ -111,9 +114,6 @@
       loopBtn.onClick = function()
       {
         createLoop(this);
-        //clearOutput();
-        //writeLn("Loop created.");
-
       };
     }
 

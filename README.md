@@ -10,7 +10,8 @@ source you want to loop. If the source has transparency, it becomes
 a problem.
 
 Waffle is a simple script that uses the blend effect to create a
-seamless loop of your source even with transparency.
+seamless loop of your source even with transparency. Can you easily
+create the process by hand? Of course you can, this just automates it!
 
 Installation & Usage
 --------------------
