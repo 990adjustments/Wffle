@@ -26,105 +26,71 @@
 
 
 //TODO: Seriously refactor!
-//TODO: Rework the interface.
 
 // Hungry, Hungry…
 {
 
-  var scriptName = "Waffle v0.5";
-  var pal;
-  var loopBtn;
-  var loopValueTx;
-  var dissolveValueTx;
-  var easeIn = new KeyframeEase(0, 33.33333);
-  var easeOut = new KeyframeEase(0, 33.33333);
-
-  function createLoop(thisObj)
+  function Waffle(thisObj)
   {
-    clearOutput();
 
-    var activeComp = app.project.activeItem;
+    var scriptName = "Waffle v0.5";
+    var loopBtn;
+    var loopValueTx;
+    var dissolveValueTx;
+    var easeIn = new KeyframeEase(0, 33.33333);
+    var easeOut = new KeyframeEase(0, 33.33333);
 
-    if (activeComp != null && (activeComp instanceof CompItem)) {
-      app.beginUndoGroup(scriptName);
+    function GetLoopPoint()
+    {
+      var tx = parseFloat(this.text);
+      loopValueTx = tx;
+    }
 
-      var loopValue = parseFloat(loopValueTx.text);
-      if (isNaN(loopValue) || loopValue < 0.1) {
-        Window.alert("Please enter a valid loop point.", "Waffle");
-        return;
-      }
+    function GetDissolve()
+    {
+      var tx = parseFloat(this.text);
+      dissolveValueTx = tx;
+    }
 
-      var dissolveValue = parseFloat(dissolveValueTx.text)
-      if (isNaN(dissolveValue) || dissolveValue < 0)
-        dissolveValue = 1.5;
+    // Core
+    function WaffleCreateLoop(thisObj)
+    {
+      clearOutput();
 
-      // Single layer in comp
-      if (activeComp.numLayers == 1) {
-        var blendLayer = activeComp.layer(1);
-        blendLayer.duplicate();
-        blendLayer.enabled = false;
+      var activeComp = app.project.activeItem;
 
-        // Shift trimmed layer to end
-        var outpoint = blendLayer.outPoint
-        // Subtract one frame from loop point given
-        var loopPoint = loopValue - activeComp.frameDuration;
-        blendLayer.inPoint = loopPoint;
-        blendLayer.startTime =  outpoint - loopValue;
+      if (activeComp != null && (activeComp instanceof CompItem)) {
+        app.beginUndoGroup(scriptName);
 
-        // Set work area
-        activeComp.workAreaStart = loopValue;
-        activeComp.workAreaDuration = (outpoint - loopValue) -  activeComp.frameDuration;
-
-        // Grab the top layer
-        var loopLayer = activeComp.layer(1);
-        var effectsGroup = loopLayer.property("ADBE Effect Parade");
-        if (effectsGroup != null) {
-          if (effectsGroup.canAddProperty("Blend")) {
-            var effectBase = effectsGroup.addProperty("Blend");
-            if (effectBase != null) {
-              // Set some keyframes
-              effectBase.property("ADBE Blend-0001").setValue(loopLayer.index + 1);
-              effectBase.property("ADBE Blend-0003").setValueAtTime((loopLayer.outPoint - dissolveValue), 1);
-              effectBase.property("ADBE Blend-0003").setValueAtTime(loopLayer.outPoint, 0);
-
-              effectBase.property("ADBE Blend-0003").setTemporalEaseAtKey(1,[easeIn],[easeOut]);
-              effectBase.property("ADBE Blend-0003").setTemporalEaseAtKey(2,[easeIn],[easeOut]);
-
-              var loopMarker = new MarkerValue("Loop Point");
-              loopLayer.property("Marker").setValueAtTime(loopValue, loopMarker);
-            }
-          }
-        }
-      }
-      // Multiple layers in comp
-      else if (activeComp.numLayers > 1) {
-        var selLayers = activeComp.selectedLayers;
-        if (selLayers.length == 0) {
-          Window.alert("Please select a layer to create loop.");
+        var loopValue = loopValueTx;
+        if (isNaN(loopValue) || loopValue < 0.1) {
+          alert("Please enter a valid loop point.", "Waffle");
           return;
         }
 
-        if (selLayers.length == 1) {
-          // Yuck! Repeated code. Need to refactor. But making it work for now.
-          //var blendLayer = selLayers[0];
-          var loopLayer = selLayers[0];
-          //blendLayer.duplicate();
-          var blendLayer = loopLayer.duplicate();
+        var dissolveValue = dissolveValueTx;
+        if (isNaN(dissolveValue) || dissolveValue < 0)
+          dissolveValue = 1.5;
+
+        // Single layer in comp
+        if (activeComp.numLayers == 1) {
+          var blendLayer = activeComp.layer(1);
+          blendLayer.duplicate();
           blendLayer.enabled = false;
 
           // Shift trimmed layer to end
-          var outpoint = blendLayer.outPoint;
+          var outpoint = blendLayer.outPoint
           // Subtract one frame from loop point given
           var loopPoint = loopValue - activeComp.frameDuration;
-          blendLayer.inPoint = loopPoint
+          blendLayer.inPoint = loopPoint;
           blendLayer.startTime =  outpoint - loopValue;
-          blendLayer.moveAfter(loopLayer);
 
           // Set work area
           activeComp.workAreaStart = loopValue;
           activeComp.workAreaDuration = (outpoint - loopValue) -  activeComp.frameDuration;
 
-          //var loopLayer = firstLayer; //activeComp.layer(1);
+          // Grab the top layer
+          var loopLayer = activeComp.layer(1);
           var effectsGroup = loopLayer.property("ADBE Effect Parade");
           if (effectsGroup != null) {
             if (effectsGroup.canAddProperty("Blend")) {
@@ -144,42 +110,121 @@
             }
           }
         }
-      }
-      else
-        Window.alert("Your comp contains no layers.");
+        // Multiple layers in comp
+        else if (activeComp.numLayers > 1) {
+          var selLayers = activeComp.selectedLayers;
+          if (selLayers.length == 0) {
+            Window.alert("Please select a layer to create loop.");
+            return;
+          }
 
-      app.endUndoGroup();
+          if (selLayers.length == 1) {
+            // Yuck! Repeated code. Need to refactor. But making it work for now.
+            //var blendLayer = selLayers[0];
+            var loopLayer = selLayers[0];
+            //blendLayer.duplicate();
+            var blendLayer = loopLayer.duplicate();
+            blendLayer.enabled = false;
 
-    } else
-        alert("Please select an active comp to use this script.");
-  }
+            // Shift trimmed layer to end
+            var outpoint = blendLayer.outPoint;
+            // Subtract one frame from loop point given
+            var loopPoint = loopValue - activeComp.frameDuration;
+            blendLayer.inPoint = loopPoint
+            blendLayer.startTime =  outpoint - loopValue;
+            blendLayer.moveAfter(loopLayer);
 
-  // Create dialog
-  function createUI(thisObj)
-  {
-    pal = (thisObj instanceof Panel) ? thisObj : new Window("palette", scriptName, [100,100,380,245], {resizeable:true});
+            // Set work area
+            activeComp.workAreaStart = loopValue;
+            activeComp.workAreaDuration = (outpoint - loopValue) -  activeComp.frameDuration;
 
-    if (pal != null) {
-      panel = pal.add("panel", [10,10,255,100], "");
-      loopTxt = pal.add("statictext", [20, 30, 95, 40], "Loop Point:");
-      loopValueTx = pal.add('edittext', [loopTxt.bounds.right + 5, 30, 155, 50]);
+            //var loopLayer = firstLayer; //activeComp.layer(1);
+            var effectsGroup = loopLayer.property("ADBE Effect Parade");
+            if (effectsGroup != null) {
+              if (effectsGroup.canAddProperty("Blend")) {
+                var effectBase = effectsGroup.addProperty("Blend");
+                if (effectBase != null) {
+                  // Set some keyframes
+                  effectBase.property("ADBE Blend-0001").setValue(loopLayer.index + 1);
+                  effectBase.property("ADBE Blend-0003").setValueAtTime((loopLayer.outPoint - dissolveValue), 1);
+                  effectBase.property("ADBE Blend-0003").setValueAtTime(loopLayer.outPoint, 0);
 
-      dissolveTx = pal.add("statictext", [20, loopValueTx.bounds.bottom + 20, 95, loopValueTx.bounds.bottom + 30], "Dissolve:");
-      dissolveValueTx = pal.add('edittext', [dissolveTx.bounds.right + 5, loopValueTx.bounds.bottom + 20, 155, loopValueTx.bounds.bottom + 40]);
+                  effectBase.property("ADBE Blend-0003").setTemporalEaseAtKey(1,[easeIn],[easeOut]);
+                  effectBase.property("ADBE Blend-0003").setTemporalEaseAtKey(2,[easeIn],[easeOut]);
 
-      loopBtn = pal.add("button", [10, dissolveValueTx.bounds.bottom + 20, 255, dissolveValueTx.bounds.bottom + 80], "Loop it!");
+                  var loopMarker = new MarkerValue("Loop Point");
+                  loopLayer.property("Marker").setValueAtTime(loopValue, loopMarker);
+                }
+              }
+            }
+          }
+        }
+        else
+          Window.alert("Your comp contains no layers.");
 
-      loopBtn.onClick = function()
-      {
-        createLoop(this);
-      };
+        app.endUndoGroup();
+
+      } else
+          Window.alert("Please select an active comp to use this script.");
     }
 
-    return pal;
+    // Create UI
+    function WaffleBuildUI(thisObj)
+    {
+      var pal = (thisObj instanceof Panel) ? thisObj: new Window ("palette", "Waffle", undefined, {resizeable: true});
+      if (pal != null)
+        {
+          var res =
+            "group { text: 'Waffle', orientation: 'column', spacing: 5, \
+              pnl: Panel { orientation: 'column', alignChildren: 'right', text: 'Options', \
+                loopPoint: Group { orientation: 'row', \
+                  st: StaticText { text: 'Loop Point:', properties: {helpTip: 'Time at where loop point will be created.'} } \
+                  loopptET: EditText { characters: 10, justify: 'left'}  \
+                 }, \
+                 dissolve: Group { orientation: 'row', \
+                         st: StaticText { text: 'Dissolve:' }, \
+                         dissolveET: EditText { characters: 10, justify: 'left' } \
+                 } \
+              }, \
+              loopbt: Button { text: 'Loop it!', alignment: 'right', preferredSize:[180,30], properties: {name: 'loopIt'} } \
+            }";
+
+            pal.grp = pal.add(res);
+
+            pal.grp.pnl.loopPoint.loopptET.onChange = GetLoopPoint;
+            pal.grp.pnl.dissolve.dissolveET.onChange = GetDissolve;
+            pal.grp.loopbt.onClick = WaffleCreateLoop;
+
+            pal.layout.layout(true);
+            pal.grp.minimumSize = pal.grp.size;
+            pal.layout.resize();
+            pal.onResizing = pal.onResize = function() {this.layout.resize();}
+        }
+        return pal;
+    }
+
+    if (parseFloat(app.version) < 8) {
+      alert("This script requires After Effects CS3 or later.", scriptName);
+      return
+    }
+
+    // Main
+    var wafflePalette = WaffleBuildUI(thisObj);
+    if (wafflePalette != null) {
+      if (wafflePalette instanceof Window) {
+        wafflePalette.center();
+        wafflePalette.show();
+      }
+      else {
+        wafflePalette.layout.layout(true);
+      }
+    }
+    else {
+      alert("Could not open the user interface.", scriptName);
+    }
   }
 
-  var win=createUI(this);
-  if(win instanceof Window) win.show();
+  Waffle(this);
 
 }
 // Hippo!
