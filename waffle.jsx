@@ -24,43 +24,51 @@
 //
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
+
+//TODO: Seriously refactor!
+//TODO: Rework the interface.
+
 // Hungry, Hungry…
 {
 
+  var scriptName = "Waffle v0.5";
   var pal;
   var loopBtn;
   var loopValueTx;
   var dissolveValueTx;
+  var easeIn = new KeyframeEase(0, 33.33333);
+  var easeOut = new KeyframeEase(0, 33.33333);
 
   function createLoop(thisObj)
   {
     clearOutput();
 
-    var scriptName = "Waffle";
     var activeComp = app.project.activeItem;
 
     if (activeComp != null && (activeComp instanceof CompItem)) {
       app.beginUndoGroup(scriptName);
 
-      var loopValue = parseInt(loopValueTx.text);
-      if (isNaN(loopValue)) {
+      var loopValue = parseFloat(loopValueTx.text);
+      if (isNaN(loopValue) || loopValue < 0.1) {
         Window.alert("Please enter a valid loop point.", "Waffle");
         return;
       }
 
-      var dissolveValue = parseInt(dissolveValueTx.text)
-      if (isNaN(dissolveValue))
+      var dissolveValue = parseFloat(dissolveValueTx.text)
+      if (isNaN(dissolveValue) || dissolveValue < 0)
         dissolveValue = 1.5;
 
+      // Single layer in comp
       if (activeComp.numLayers == 1) {
         var blendLayer = activeComp.layer(1);
         blendLayer.duplicate();
         blendLayer.enabled = false;
 
+        // Shift trimmed layer to end
         var outpoint = blendLayer.outPoint
         // Subtract one frame from loop point given
         var loopPoint = loopValue - activeComp.frameDuration;
-        blendLayer.inPoint = loopPoint
+        blendLayer.inPoint = loopPoint;
         blendLayer.startTime =  outpoint - loopValue;
 
         // Set work area
@@ -75,19 +83,70 @@
             var effectBase = effectsGroup.addProperty("Blend");
             if (effectBase != null) {
               // Set some keyframes
-              effectBase.property("ADBE Blend-0001").setValue(2);
+              effectBase.property("ADBE Blend-0001").setValue(loopLayer.index + 1);
               effectBase.property("ADBE Blend-0003").setValueAtTime((loopLayer.outPoint - dissolveValue), 1);
               effectBase.property("ADBE Blend-0003").setValueAtTime(loopLayer.outPoint, 0);
-              effectBase.property("ADBE Blend-0003").setInterpolationTypeAtKey(1,KeyframeInterpolationType.BEZIER);
-              effectBase.property("ADBE Blend-0003").setInterpolationTypeAtKey(2,KeyframeInterpolationType.BEZIER);
+
+              effectBase.property("ADBE Blend-0003").setTemporalEaseAtKey(1,[easeIn],[easeOut]);
+              effectBase.property("ADBE Blend-0003").setTemporalEaseAtKey(2,[easeIn],[easeOut]);
 
               var loopMarker = new MarkerValue("Loop Point");
               loopLayer.property("Marker").setValueAtTime(loopValue, loopMarker);
             }
           }
         }
-      } else
-          Window.alert("Script only works with one layer in the composition.");
+      }
+      // Multiple layers in comp
+      else if (activeComp.numLayers > 1) {
+        var selLayers = activeComp.selectedLayers;
+        if (selLayers.length == 0) {
+          Window.alert("Please select a layer to create loop.");
+          return;
+        }
+
+        if (selLayers.length == 1) {
+          // Yuck! Repeated code. Need to refactor. But making it work for now.
+          //var blendLayer = selLayers[0];
+          var loopLayer = selLayers[0];
+          //blendLayer.duplicate();
+          var blendLayer = loopLayer.duplicate();
+          blendLayer.enabled = false;
+
+          // Shift trimmed layer to end
+          var outpoint = blendLayer.outPoint;
+          // Subtract one frame from loop point given
+          var loopPoint = loopValue - activeComp.frameDuration;
+          blendLayer.inPoint = loopPoint
+          blendLayer.startTime =  outpoint - loopValue;
+          blendLayer.moveAfter(loopLayer);
+
+          // Set work area
+          activeComp.workAreaStart = loopValue;
+          activeComp.workAreaDuration = (outpoint - loopValue) -  activeComp.frameDuration;
+
+          //var loopLayer = firstLayer; //activeComp.layer(1);
+          var effectsGroup = loopLayer.property("ADBE Effect Parade");
+          if (effectsGroup != null) {
+            if (effectsGroup.canAddProperty("Blend")) {
+              var effectBase = effectsGroup.addProperty("Blend");
+              if (effectBase != null) {
+                // Set some keyframes
+                effectBase.property("ADBE Blend-0001").setValue(loopLayer.index + 1);
+                effectBase.property("ADBE Blend-0003").setValueAtTime((loopLayer.outPoint - dissolveValue), 1);
+                effectBase.property("ADBE Blend-0003").setValueAtTime(loopLayer.outPoint, 0);
+
+                effectBase.property("ADBE Blend-0003").setTemporalEaseAtKey(1,[easeIn],[easeOut]);
+                effectBase.property("ADBE Blend-0003").setTemporalEaseAtKey(2,[easeIn],[easeOut]);
+
+                var loopMarker = new MarkerValue("Loop Point");
+                loopLayer.property("Marker").setValueAtTime(loopValue, loopMarker);
+              }
+            }
+          }
+        }
+      }
+      else
+        Window.alert("Your comp contains no layers.");
 
       app.endUndoGroup();
 
@@ -98,18 +157,17 @@
   // Create dialog
   function createUI(thisObj)
   {
-    pal = (thisObj instanceof Panel) ? thisObj : new Window("palette", "Waffle", [100,100,380,245], {resizeable:true});
+    pal = (thisObj instanceof Panel) ? thisObj : new Window("palette", scriptName, [100,100,380,245], {resizeable:true});
 
     if (pal != null) {
-      //panel = win.add("panel", [25,15,255,130], "WafflePanel");
-      //TODO: Rework the interface.
-      loopTxt = pal.add("statictext", [20, 20, 95, 40], "Loop Point:");
-      loopValueTx = pal.add('edittext', [loopTxt.bounds.right + 5, 20, 150, 40]);
+      panel = pal.add("panel", [10,10,255,100], "");
+      loopTxt = pal.add("statictext", [20, 30, 95, 40], "Loop Point:");
+      loopValueTx = pal.add('edittext', [loopTxt.bounds.right + 5, 30, 155, 50]);
 
-      dissolveTx = pal.add("statictext", [20, loopValueTx.bounds.bottom + 10, 95, loopValueTx.bounds.bottom + 30], "Dissolve:");
-      dissolveValueTx = pal.add('edittext', [dissolveTx.bounds.right + 5, loopValueTx.bounds.bottom + 10, 150, loopValueTx.bounds.bottom + 30]);
+      dissolveTx = pal.add("statictext", [20, loopValueTx.bounds.bottom + 20, 95, loopValueTx.bounds.bottom + 30], "Dissolve:");
+      dissolveValueTx = pal.add('edittext', [dissolveTx.bounds.right + 5, loopValueTx.bounds.bottom + 20, 155, loopValueTx.bounds.bottom + 40]);
 
-      loopBtn = pal.add("button", [dissolveTx.bounds.right + 5, dissolveValueTx.bounds.bottom + 10, 170, dissolveValueTx.bounds.bottom + 30], "Loop it!");
+      loopBtn = pal.add("button", [10, dissolveValueTx.bounds.bottom + 20, 255, dissolveValueTx.bounds.bottom + 80], "Loop it!");
 
       loopBtn.onClick = function()
       {
