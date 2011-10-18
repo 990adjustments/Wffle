@@ -2,13 +2,13 @@
 // Name: Waffle
 // Author: Erwin Santacruz
 // Date: 10.13.11
-// Website: http://www.990adjustments.com /
+// Website: http://www.990adjustments.com/
 // Email: hi@990adjustments.com
 //
 // Description:
 // Creates a loop from a layer using the blend effect.
-// Good for when you can only dissolve to get a loop
-// and the layers contain transparency.
+// Good for when you can only dissolve between to items
+// to get a loop and the layers contain transparency.
 //
 // Legal Mumbo Jumbo:
 // THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS "AS IS" AND ANY
@@ -64,7 +64,7 @@
 
         var loopValue = loopValueTx;
         if (isNaN(loopValue) || loopValue < 0.1) {
-          alert("Please enter a valid loop point.", "Waffle");
+          alert("Please enter a valid loop point.", scriptName);
           return;
         }
 
@@ -72,7 +72,7 @@
         if (isNaN(dissolveValue) || dissolveValue < 0)
           dissolveValue = 1.5;
 
-        // Single layer in comp
+        // If there is only one layer in comp
         if (activeComp.numLayers == 1) {
           var blendLayer = activeComp.layer(1);
           blendLayer.duplicate();
@@ -101,6 +101,7 @@
                 effectBase.property("ADBE Blend-0003").setValueAtTime((loopLayer.outPoint - dissolveValue), 1);
                 effectBase.property("ADBE Blend-0003").setValueAtTime(loopLayer.outPoint, 0);
 
+                // Ease those bitches!
                 effectBase.property("ADBE Blend-0003").setTemporalEaseAtKey(1,[easeIn],[easeOut]);
                 effectBase.property("ADBE Blend-0003").setTemporalEaseAtKey(2,[easeIn],[easeOut]);
 
@@ -110,7 +111,7 @@
             }
           }
         }
-        // Multiple layers in comp
+        // Deal with multiple layers in comp
         else if (activeComp.numLayers > 1) {
           var selLayers = activeComp.selectedLayers;
           if (selLayers.length == 0) {
@@ -120,9 +121,7 @@
 
           if (selLayers.length == 1) {
             // Yuck! Repeated code. Need to refactor. But making it work for now.
-            //var blendLayer = selLayers[0];
             var loopLayer = selLayers[0];
-            //blendLayer.duplicate();
             var blendLayer = loopLayer.duplicate();
             blendLayer.enabled = false;
 
@@ -138,7 +137,6 @@
             activeComp.workAreaStart = loopValue;
             activeComp.workAreaDuration = (outpoint - loopValue) -  activeComp.frameDuration;
 
-            //var loopLayer = firstLayer; //activeComp.layer(1);
             var effectsGroup = loopLayer.property("ADBE Effect Parade");
             if (effectsGroup != null) {
               if (effectsGroup.canAddProperty("Blend")) {
