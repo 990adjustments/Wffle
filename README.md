@@ -5,8 +5,8 @@ Description
 -----------
 
 Sometimes you need to create a loop from a source that has no loop
-point and the only way is to dissolve between a duplicate of the
-source you want to loop. If the source has transparency, it becomes
+point and the only way to create the loop is to dissolve between a
+duplicate of the source. If the source has transparency, it becomes
 a problem.
 
 Waffle is a simple script that uses the blend effect to create a
@@ -20,10 +20,12 @@ Just place the script in your After Effects scripts directory.
 The script is also dockable so you can place the script in
 the After Effects ScriptUI folder.
 
-Take your final source comp or footage item and place it in a
-comp. The source file you want to loop should be the only item
-in the composition. Run Waffle and then just enter a loop point
-and the amount of time between the dissolve and you are good to go!
+If the layer you want to loop is the only layer in the comp, just enter
+the loop point in seconds and an optional dissolve time and you are good
+to good. If you leave the dissolve value blank, it defaults to 1.5 seconds.
+
+If you have multiple layers in your composition, then you need to select
+a layer to run the script.
 
 Legal
 -----
