@@ -9,7 +9,7 @@ point and the only way to create the loop is to dissolve between a
 duplicate of the source. If the source has transparency, it becomes
 a problem.
 
-Waffle is a simple script that uses the blend effect to create a
+Waffle is a simple After Effects script that uses the blend effect to create a
 seamless loop of your source even with transparency. Can you easily
 create the process by hand? Of course you can, this just automates it!
 
