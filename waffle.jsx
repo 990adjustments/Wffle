@@ -147,6 +147,7 @@
                   effectBase.property("ADBE Blend-0003").setValueAtTime((loopLayer.outPoint - dissolveValue), 1);
                   effectBase.property("ADBE Blend-0003").setValueAtTime(loopLayer.outPoint, 0);
 
+                  // Ease those bitches! I really should not be writing this again
                   effectBase.property("ADBE Blend-0003").setTemporalEaseAtKey(1,[easeIn],[easeOut]);
                   effectBase.property("ADBE Blend-0003").setTemporalEaseAtKey(2,[easeIn],[easeOut]);
 
