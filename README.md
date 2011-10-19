@@ -1,8 +1,9 @@
 Waffle
 ======
+**1.0 for After Effects**
 
-Description
------------
+Welcome
+-------
 
 Sometimes you need to create a loop from a source that has no loop
 point and the only way to create the loop is to dissolve between a
@@ -13,19 +14,42 @@ Waffle is a simple After Effects script that uses the blend effect to create a
 seamless loop of your source even with transparency. Can you easily
 create the process by hand? Of course you can, this just automates it!
 
-Installation & Usage
---------------------
+Installation
+------------
 
 Just place the script in your After Effects scripts directory.
 The script is also dockable so you can place the script in
 the After Effects ScriptUI folder.
 
-If the layer you want to loop is the only layer in the comp, just enter
-the loop point in seconds and an optional dissolve time and you are good
-to good. If you leave the dissolve value blank, it defaults to 1.5 seconds.
+How do I use Waffle
+-------------------
 
-If you have multiple layers in your composition, then you need to select
-a layer to run the script.
+If you only have one layer in your comp:
+
+ * Enter the point at which you want the loop to begin in seconds
+ * Optionally, enter a dissolve value. Default is 1.5 seconds if left blank
+ * Loop it!
+
+If you have multiple layers in the comp:
+
+ * You must first select the layer you want to loop
+ * Enter the point at which you want the loop to begin in seconds
+ * Optionally, enter a dissolve value. Default is 1.5 seconds if left blank
+ * Loop it!
+
+Version History
+---------------
+
+Waffle 1.0
+
+ * First "official" release!
+
+Contact, Suggestions, Bugs, Spam
+--------------------------------
+
+E-Mail: hi@990adjustments.com  
+Web: [http://www.990adjustments.com/](http://www.990adjustments.com/)  
+Twitter: [@990adjustments](http://www.twitter.com/990adjustments/)
 
 Legal
 -----
@@ -41,10 +65,4 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-------------
-
-Thank you & Peace!
-
-Erwin  
-[www.990adjustments.com](http://www.990adjustments.com/)  
-[Twitter](http://www.twitter.com/990adjustments/)
+990adjustments All rights reserved. Copyright © 2011
