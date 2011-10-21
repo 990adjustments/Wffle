@@ -1,4 +1,4 @@
-Waffle
+Wffle
 ======
 **1.0 for After Effects**
 
@@ -10,7 +10,7 @@ point and the only way to create the loop is to dissolve between a
 duplicate of the source. If the source has transparency, it becomes
 a problem.
 
-Waffle is a simple After Effects script that uses the blend effect to create a
+Wffle is a simple After Effects script that uses the blend effect to create a
 seamless loop of your source even with transparency. Can you easily
 create the process by hand? Of course you can, this just automates it!
 
@@ -21,7 +21,7 @@ Just place the script in your After Effects scripts directory.
 The script is also dockable so you can place the script in
 the After Effects ScriptUI folder.
 
-How do I use Waffle
+How do I use Wffle
 -------------------
 
 If you only have one layer in your comp:
@@ -40,7 +40,7 @@ If you have multiple layers in the comp:
 Version History
 ---------------
 
-Waffle 1.0
+Wffle 1.0
 
  * First "official" release!
 

@@ -1,5 +1,5 @@
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-// Name: Waffle
+// Name: Wffle
 // Author: Erwin Santacruz
 // Date: 10.13.11
 // Website: http://www.990adjustments.com/
@@ -30,10 +30,10 @@
 // Hungry, Hungry…
 {
 
-  function Waffle(thisObj)
+  function Wffle(thisObj)
   {
 
-    var scriptName = "Waffle v0.5";
+    var scriptName = "Wffle v0.5";
     var loopBtn;
     var loopValueTx;
     var dissolveValueTx;
@@ -53,7 +53,7 @@
     }
 
     // Core
-    function WaffleCreateLoop(thisObj)
+    function WffleCreateLoop(thisObj)
     {
       clearOutput();
 
@@ -168,13 +168,13 @@
     }
 
     // Create UI
-    function WaffleBuildUI(thisObj)
+    function WffleBuildUI(thisObj)
     {
-      var pal = (thisObj instanceof Panel) ? thisObj: new Window ("palette", "Waffle", undefined, {resizeable: true});
+      var pal = (thisObj instanceof Panel) ? thisObj: new Window ("palette", "Wffle", undefined, {resizeable: true});
       if (pal != null)
         {
           var res =
-            "group { text: 'Waffle', orientation: 'column', spacing: 5, \
+            "group { text: 'Wffle', orientation: 'column', spacing: 5, \
               pnl: Panel { orientation: 'column', alignChildren: 'right', text: 'Options', \
                 loopPoint: Group { orientation: 'row', \
                   st: StaticText { text: 'Loop Point:', properties: {helpTip: 'Time at where loop point will be created.'} } \
@@ -192,7 +192,7 @@
 
             pal.grp.pnl.loopPoint.loopptET.onChange = GetLoopPoint;
             pal.grp.pnl.dissolve.dissolveET.onChange = GetDissolve;
-            pal.grp.loopbt.onClick = WaffleCreateLoop;
+            pal.grp.loopbt.onClick = WffleCreateLoop;
 
             pal.layout.layout(true);
             pal.grp.minimumSize = pal.grp.size;
@@ -208,14 +208,14 @@
     }
 
     // Main
-    var wafflePalette = WaffleBuildUI(thisObj);
-    if (wafflePalette != null) {
-      if (wafflePalette instanceof Window) {
-        wafflePalette.center();
-        wafflePalette.show();
+    var wfflePalette = WffleBuildUI(thisObj);
+    if (wfflePalette != null) {
+      if (wfflePalette instanceof Window) {
+        wfflePalette.center();
+        wfflePalette.show();
       }
       else {
-        wafflePalette.layout.layout(true);
+        wfflePalette.layout.layout(true);
       }
     }
     else {
@@ -223,7 +223,7 @@
     }
   }
 
-  Waffle(this);
+  Wffle(this);
 
 }
 // Hippo!
