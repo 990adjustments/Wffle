@@ -32,13 +32,37 @@
 
   function Wffle(thisObj)
   {
-
+    var frames = 1813;
+    var timecode = 1812
     var scriptName = "Wffle v0.5";
     var loopBtn;
     var loopValueTx;
     var dissolveValueTx;
     var easeIn = new KeyframeEase(0, 33.33333);
     var easeOut = new KeyframeEase(0, 33.33333);
+    var helpString =
+      "Wffle\n" +
+      "1.0 for After Effects\n" +
+      "Copyright (c) 2011 990adjustments (Erwin Santacruz). All rights reserved\n" +
+      "\n" +
+      "If you only have one layer in your comp:\n\n" +
+
+         "* Enter the point at which you want the loop to begin in seconds\n" +
+         "* Optionally, enter a dissolve value. Default is 1.5 seconds if left blank\n" +
+         "* Loop it!\n\n" +
+
+      "If you have multiple layers in the comp:\n\n" +
+
+         "* You must first select the layer you want to loop\n" +
+         "* Enter the point at which you want the loop to begin in seconds\n" +
+         "* Optionally, enter a dissolve value. Default is 1.5 seconds if left blank\n" +
+         "* Loop it!\n\n" +
+
+      "As with many effects, the blend effect will not read any effects or a time-remap applied to " +
+      "blend layer source. If the layer is not looping, check to make sure no effects are present. " +
+      "Otherwise, precomp the layer.\n\n" +
+
+      "The loop point and dissolve values are given in seconds.";
 
     function GetLoopPoint()
     {
@@ -185,14 +209,18 @@
                          dissolveET: EditText { characters: 10, justify: 'left' } \
                  } \
               }, \
-              loopbt: Button { text: 'Loop it!', alignment: 'right', preferredSize:[180,30], properties: {name: 'loopIt'} } \
+              buttons: Group { orientation: 'row', spacing: 60, \
+                helpbt: Button { text: '?', alignment: ['left','fill'], preferredSize: [30, 30] }, \
+                loopbt: Button { text: 'Loop it!', alignment: ['right','center'], preferredSize:[90,30], properties: {name: 'loopIt'} } \
+              } \
             }";
 
             pal.grp = pal.add(res);
 
             pal.grp.pnl.loopPoint.loopptET.onChange = GetLoopPoint;
             pal.grp.pnl.dissolve.dissolveET.onChange = GetDissolve;
-            pal.grp.loopbt.onClick = WffleCreateLoop;
+            pal.grp.buttons.helpbt.onClick = function() { alert(helpString); };
+            pal.grp.buttons.loopbt.onClick = WffleCreateLoop;
 
             pal.layout.layout(true);
             pal.grp.minimumSize = pal.grp.size;
