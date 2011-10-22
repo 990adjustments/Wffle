@@ -32,9 +32,10 @@
 
   function Wffle(thisObj)
   {
-    var frames = 1813;
-    var timecode = 1812
+    // Globals
     var scriptName = "Wffle v0.5";
+    var frames = 1813;
+    var timecode = 1812;
     var loopBtn;
     var loopValueTx;
     var dissolveValueTx;
@@ -62,12 +63,21 @@
       "blend layer source. If the layer is not looping, check to make sure no effects are present. " +
       "Otherwise, precomp the layer.\n\n" +
 
-      "The loop point and dissolve values are given in seconds.";
+      "If your Display Style in your composition settings is set to timecode, enter your values in seconds.\n\n" +
+      "If your Display Style is in frames, then enter the values as frames.";
 
     function GetLoopPoint()
     {
+      // Determine time display
+      var timeDisplay = app.project.timecodeDisplayType;
       var tx = parseFloat(this.text);
-      loopValueTx = tx;
+
+      if (timeDisplay == timecode)
+        loopValueTx = tx;
+      else if (timeDisplay == frames) {
+        var item = app.project.activeItem;
+        loopValueTx = tx * item.frameDuration;
+      }
     }
 
     function GetDissolve()
