@@ -25,15 +25,13 @@
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 
-//TODO: Seriously refactor!
-
 // Hungry, Hungry…
 {
 
   function Wffle(thisObj)
   {
     // Globals
-    var scriptName = "Wffle v0.5";
+    var scriptName = "Wffle v1.0";
     var frames = 1813;
     var timecode = 1812;
     var loopBtn;
@@ -64,7 +62,9 @@
       "Otherwise, precomp the layer.\n\n" +
 
       "If your Display Style in your composition settings is set to timecode, enter your values in seconds.\n\n" +
-      "If your Display Style is in frames, then enter the values as frames.";
+      "If your Display Style is in frames, then enter the values as frames.\n\n" +
+
+      "This script requires After Effects CS3 or later.";
 
     function GetLoopPoint()
     {
@@ -84,6 +84,30 @@
     {
       var tx = parseFloat(this.text);
       dissolveValueTx = tx;
+    }
+
+    function addBlend(loopLayer, loopValue, dissolveValue)
+    {
+      var effectsGroup = loopLayer.property("ADBE Effect Parade");
+      if (effectsGroup != null) {
+        if (effectsGroup.canAddProperty("Blend")) {
+          var effectBase = effectsGroup.addProperty("Blend");
+          if (effectBase != null) {
+            // Set some keyframes
+            effectBase.property("ADBE Blend-0001").setValue(loopLayer.index + 1);
+            effectBase.property("ADBE Blend-0003").setValueAtTime((loopLayer.outPoint - dissolveValue), 1);
+            effectBase.property("ADBE Blend-0003").setValueAtTime(loopLayer.outPoint, 0);
+
+            // Ease those bitches!
+            effectBase.property("ADBE Blend-0003").setTemporalEaseAtKey(1,[easeIn],[easeOut]);
+            effectBase.property("ADBE Blend-0003").setTemporalEaseAtKey(2,[easeIn],[easeOut]);
+
+            // This should not be in here but I'll leave it on for now.
+            var loopMarker = new MarkerValue("Loop Point");
+            loopLayer.property("Marker").setValueAtTime(loopValue, loopMarker);
+          }
+        }
+      }
     }
 
     // Core
@@ -125,36 +149,21 @@
 
           // Grab the top layer
           var loopLayer = activeComp.layer(1);
-          var effectsGroup = loopLayer.property("ADBE Effect Parade");
-          if (effectsGroup != null) {
-            if (effectsGroup.canAddProperty("Blend")) {
-              var effectBase = effectsGroup.addProperty("Blend");
-              if (effectBase != null) {
-                // Set some keyframes
-                effectBase.property("ADBE Blend-0001").setValue(loopLayer.index + 1);
-                effectBase.property("ADBE Blend-0003").setValueAtTime((loopLayer.outPoint - dissolveValue), 1);
-                effectBase.property("ADBE Blend-0003").setValueAtTime(loopLayer.outPoint, 0);
-
-                // Ease those bitches!
-                effectBase.property("ADBE Blend-0003").setTemporalEaseAtKey(1,[easeIn],[easeOut]);
-                effectBase.property("ADBE Blend-0003").setTemporalEaseAtKey(2,[easeIn],[easeOut]);
-
-                var loopMarker = new MarkerValue("Loop Point");
-                loopLayer.property("Marker").setValueAtTime(loopValue, loopMarker);
-              }
-            }
-          }
+          addBlend(loopLayer, loopValue, dissolveValue);
         }
         // Deal with multiple layers in comp
         else if (activeComp.numLayers > 1) {
           var selLayers = activeComp.selectedLayers;
           if (selLayers.length == 0) {
-            Window.alert("Please select a layer to create loop.");
+            alert("Please select a layer to create loop.", scriptName);
+            return;
+          }
+          else if (selLayers.length > 1) {
+            alert("You have more than one layer selected. Please select just one layer.", scriptName);
             return;
           }
 
           if (selLayers.length == 1) {
-            // Yuck! Repeated code. Need to refactor. But making it work for now.
             var loopLayer = selLayers[0];
             var blendLayer = loopLayer.duplicate();
             blendLayer.enabled = false;
@@ -170,35 +179,16 @@
             // Set work area
             activeComp.workAreaStart = loopValue;
             activeComp.workAreaDuration = (outpoint - loopValue) -  activeComp.frameDuration;
-
-            var effectsGroup = loopLayer.property("ADBE Effect Parade");
-            if (effectsGroup != null) {
-              if (effectsGroup.canAddProperty("Blend")) {
-                var effectBase = effectsGroup.addProperty("Blend");
-                if (effectBase != null) {
-                  // Set some keyframes
-                  effectBase.property("ADBE Blend-0001").setValue(loopLayer.index + 1);
-                  effectBase.property("ADBE Blend-0003").setValueAtTime((loopLayer.outPoint - dissolveValue), 1);
-                  effectBase.property("ADBE Blend-0003").setValueAtTime(loopLayer.outPoint, 0);
-
-                  // Ease those bitches! I really should not be writing this again
-                  effectBase.property("ADBE Blend-0003").setTemporalEaseAtKey(1,[easeIn],[easeOut]);
-                  effectBase.property("ADBE Blend-0003").setTemporalEaseAtKey(2,[easeIn],[easeOut]);
-
-                  var loopMarker = new MarkerValue("Loop Point");
-                  loopLayer.property("Marker").setValueAtTime(loopValue, loopMarker);
-                }
-              }
-            }
+            addBlend(loopLayer, loopValue, dissolveValue);
           }
         }
         else
-          Window.alert("Your comp contains no layers.");
+          alert("Your comp contains no layers.", scriptName);
 
         app.endUndoGroup();
 
       } else
-          Window.alert("Please select an active comp to use this script.");
+          alert("Please select an active comp to use this script.", scriptName);
     }
 
     // Create UI
@@ -219,7 +209,7 @@
                          dissolveET: EditText { characters: 10, justify: 'left' } \
                  } \
               }, \
-              buttons: Group { orientation: 'row', spacing: 60, \
+              buttons: Group { orientation: 'row', spacing: 61, \
                 helpbt: Button { text: '?', alignment: ['left','fill'], preferredSize: [30, 30] }, \
                 loopbt: Button { text: 'Loop it!', alignment: ['right','center'], preferredSize:[90,30], properties: {name: 'loopIt'} } \
               } \
@@ -257,7 +247,7 @@
       }
     }
     else {
-      alert("Could not open the user interface.", scriptName);
+      alert("Bummer, could not open the user interface for Wffle.", scriptName);
     }
   }
 
