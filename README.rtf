@@ -34,7 +34,9 @@ Wffle is a simple After Effects script that uses the blend effect to create a se
 \f1\b\fs22 \cf0 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li360\ql\qnatural
 
-\b0 \cf0 Just place the script in your After Effects scripts directory. The script also works as a dockable panel if you place it in the After Effects ScriptUI folder.\
+\b0 \cf0 This script requires After Effects CS3 or later.\
+\
+Just place the script in your After Effects scripts directory. The script also works as a dockable panel if you place it in the After Effects ScriptUI folder.\
 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 
@@ -50,16 +52,20 @@ Wffle is a simple After Effects script that uses the blend effect to create a se
 \b \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\li360\ql\qnatural
 
-\b0 \cf0 \'95 Enter the point at which you want the loop to begin in seconds\
-\'95 Optionally, enter a dissolve value. Default is 1.5 seconds if left blank\
+\b0 \cf0 \'95 Enter the time at which you want the loop to begin\
+\'95 Enter an optional dissolve length. Default is 1.5 sec\
 \'95 Loop it!\
 \
 If you have multiple layers in the comp:\
 \
-\'95 You must first select the layer you want to loop\
-\'95 Enter the point at which you want the loop to begin in seconds\
-\'95 Optionally, enter a dissolve value. Default is 1.5 seconds if left blank\
+\'95 Select the layer you want to loop\
+\'95 Enter the time at which you want the loop to begin\
+\'95 Enter an optional dissolve length. Default is 1.5 sec\
 \'95 Loop it!\
+\
+As with many effects, the blend effect will not read any effects or a time-remap applied to blend layer source. If the layer is not looping, check to make sure no effects are present. Otherwise, precomp the layer.\
+\
+If your Display Style in your composition settings is set to timecode, enter your values in seconds. If your Display Style is in frames, then enter the values as frames.\
 \
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 

@@ -48,15 +48,15 @@
 
       "If you only have one layer in your comp:\n\n" +
 
-         "* Enter the time at which you want the loop to begin.\n" +
-         "* Enter an optional dissolve length. Default is 1.5 sec.\n" +
+         "* Enter the time at which you want the loop to begin\n" +
+         "* Enter an optional dissolve length. Default is 1.5 sec\n" +
          "* Loop it!\n\n" +
 
       "If you have multiple layers in the comp:\n\n" +
 
-         "* Select the layer you want to loop.\n" +
-         "* Enter the time at which you want the loop to begin.\n" +
-         "* Enter an optional dissolve length. Default is 1.5 sec.\n" +
+         "* Select the layer you want to loop\n" +
+         "* Enter the time at which you want the loop to begin\n" +
+         "* Enter an optional dissolve length. Default is 1.5 sec\n" +
          "* Loop it!\n\n" +
 
       "As with many effects, the blend effect will not read any effects or a time-remap applied to " +

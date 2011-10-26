@@ -17,6 +17,8 @@ create the process by hand? Of course you can, this just automates it!
 Installation
 ------------
 
+This script requires After Effects CS3 or later.
+
 Just place the script in your After Effects scripts directory.
 The script is also dockable so you can place the script in
 the After Effects ScriptUI folder.
@@ -26,16 +28,24 @@ How do I use Wffle
 
 If you only have one layer in your comp:
 
- * Enter the point at which you want the loop to begin in seconds
- * Optionally, enter a dissolve value. Default is 1.5 seconds if left blank
+ * Enter the time at which you want the loop to begin
+ * Enter an optional dissolve length. Default is 1.5 sec
  * Loop it!
 
 If you have multiple layers in the comp:
 
- * You must first select the layer you want to loop
- * Enter the point at which you want the loop to begin in seconds
- * Optionally, enter a dissolve value. Default is 1.5 seconds if left blank
+ * Select the layer you want to loop
+ * Enter the time at which you want the loop to begin
+ * Enter an optional dissolve length. Default is 1.5 sec
  * Loop it!
+
+
+As with many effects, the blend effect will not read any effects or a time-remap
+applied to blend layer source. If the layer is not looping, check to make sure no
+effects are present. Otherwise, precomp the layer.
+
+If your Display Style in your composition settings is set to timecode, enter your
+values in seconds. If your Display Style is in frames, then enter the values as frames.
 
 Version History
 ---------------
