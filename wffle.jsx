@@ -21,7 +21,6 @@
 // ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 
@@ -44,17 +43,20 @@
       "1.0 for After Effects\n" +
       "Copyright (c) 2011 990adjustments (Erwin Santacruz). All rights reserved\n" +
       "\n" +
+
+      "This script requires After Effects CS3 or later.\n\n" +
+
       "If you only have one layer in your comp:\n\n" +
 
-         "* Enter the point at which you want the loop to begin in seconds\n" +
-         "* Optionally, enter a dissolve value. Default is 1.5 seconds if left blank\n" +
+         "* Enter the time at which you want the loop to begin.\n" +
+         "* Enter an optional dissolve length. Default is 1.5 sec.\n" +
          "* Loop it!\n\n" +
 
       "If you have multiple layers in the comp:\n\n" +
 
-         "* You must first select the layer you want to loop\n" +
-         "* Enter the point at which you want the loop to begin in seconds\n" +
-         "* Optionally, enter a dissolve value. Default is 1.5 seconds if left blank\n" +
+         "* Select the layer you want to loop.\n" +
+         "* Enter the time at which you want the loop to begin.\n" +
+         "* Enter an optional dissolve length. Default is 1.5 sec.\n" +
          "* Loop it!\n\n" +
 
       "As with many effects, the blend effect will not read any effects or a time-remap applied to " +
@@ -62,9 +64,8 @@
       "Otherwise, precomp the layer.\n\n" +
 
       "If your Display Style in your composition settings is set to timecode, enter your values in seconds.\n\n" +
-      "If your Display Style is in frames, then enter the values as frames.\n\n" +
+      "If your Display Style is in frames, then enter the values as frames.";
 
-      "This script requires After Effects CS3 or later.";
 
     function GetLoopPoint()
     {
@@ -102,7 +103,7 @@
             effectBase.property("ADBE Blend-0003").setTemporalEaseAtKey(1,[easeIn],[easeOut]);
             effectBase.property("ADBE Blend-0003").setTemporalEaseAtKey(2,[easeIn],[easeOut]);
 
-            // This should not be in here but I'll leave it on for now.
+            // This should not be in here but I'll leave it in for now.
             var loopMarker = new MarkerValue("Loop Point");
             loopLayer.property("Marker").setValueAtTime(loopValue, loopMarker);
           }
@@ -201,17 +202,17 @@
             "group { text: 'Wffle', orientation: 'column', spacing: 5, \
               pnl: Panel { orientation: 'column', alignChildren: 'right', text: 'Options', \
                 loopPoint: Group { orientation: 'row', \
-                  st: StaticText { text: 'Loop Point:', properties: {helpTip: 'Time at where loop point will be created.'} } \
-                  loopptET: EditText { characters: 10, justify: 'left'}  \
+                  st: StaticText { text: 'Loop Point:', helpTip: 'Set loop point time.' }, \
+                  loopptET: EditText { characters: 10, justify: 'left', helpTip: 'Set loop point time.'}  \
                  }, \
                  dissolve: Group { orientation: 'row', \
-                         st: StaticText { text: 'Dissolve:' }, \
-                         dissolveET: EditText { characters: 10, justify: 'left' } \
+                         st: StaticText { text: 'Dissolve:', helpTip: 'Set dissolve length.' }, \
+                         dissolveET: EditText { characters: 10, justify: 'left', helpTip: 'Set dissolve length.' } \
                  } \
               }, \
               buttons: Group { orientation: 'row', spacing: 61, \
-                helpbt: Button { text: '?', alignment: ['left','fill'], preferredSize: [30, 30] }, \
-                loopbt: Button { text: 'Loop it!', alignment: ['right','center'], preferredSize:[90,30], properties: {name: 'loopIt'} } \
+                helpbt: Button { text: '?', alignment: ['left','fill'], preferredSize: [30, 20] }, \
+                loopbt: Button { text: 'Loop it!', alignment: ['right','center'], preferredSize:[90,20], properties: {name: 'loopIt'} } \
               } \
             }";
 
