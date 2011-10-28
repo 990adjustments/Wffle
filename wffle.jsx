@@ -83,21 +83,31 @@
 
     function GetDissolve()
     {
+      var timeDisplay = app.project.timecodeDisplayType;
       var tx = parseFloat(this.text);
-      dissolveValueTx = tx;
+
+      if (timeDisplay == timecode)
+        dissolveValueTx = tx;
+      else if (timeDisplay == frames) {
+        var item = app.project.activeItem;
+        dissolveValueTx = tx * item.frameDuration;
+      }
     }
 
-    function addBlend(loopLayer, loopValue, dissolveValue)
+    function addBlend(activeItem, loopLayer, loopValue, dissolveValue)
     {
       var effectsGroup = loopLayer.property("ADBE Effect Parade");
       if (effectsGroup != null) {
         if (effectsGroup.canAddProperty("Blend")) {
           var effectBase = effectsGroup.addProperty("Blend");
           if (effectBase != null) {
+            // Subtract one frame from outpoint
+            var loopLayerOutPoint = loopLayer.outPoint - activeItem.frameDuration;
+
             // Set some keyframes
             effectBase.property("ADBE Blend-0001").setValue(loopLayer.index + 1);
-            effectBase.property("ADBE Blend-0003").setValueAtTime((loopLayer.outPoint - dissolveValue), 1);
-            effectBase.property("ADBE Blend-0003").setValueAtTime(loopLayer.outPoint, 0);
+            effectBase.property("ADBE Blend-0003").setValueAtTime((loopLayerOutPoint - dissolveValue), 1);
+            effectBase.property("ADBE Blend-0003").setValueAtTime(loopLayerOutPoint, 0);
 
             // Ease those bitches!
             effectBase.property("ADBE Blend-0003").setTemporalEaseAtKey(1,[easeIn],[easeOut]);
@@ -122,14 +132,15 @@
         app.beginUndoGroup(scriptName);
 
         var loopValue = loopValueTx;
-        if (isNaN(loopValue) || loopValue < 0.1) {
+        if (isNaN(loopValue) || loopValue < activeComp.frameDuration) {
           alert("Please enter a valid loop point.", scriptName);
           return;
         }
 
         var dissolveValue = dissolveValueTx;
-        if (isNaN(dissolveValue) || dissolveValue < 0)
+        if (isNaN(dissolveValue) || dissolveValue < activeComp.frameDuration) {
           dissolveValue = 1.5;
+        }
 
         // If there is only one layer in comp
         if (activeComp.numLayers == 1) {
@@ -150,7 +161,7 @@
 
           // Grab the top layer
           var loopLayer = activeComp.layer(1);
-          addBlend(loopLayer, loopValue, dissolveValue);
+          addBlend(activeComp, loopLayer, loopValue, dissolveValue);
         }
         // Deal with multiple layers in comp
         else if (activeComp.numLayers > 1) {
@@ -180,7 +191,7 @@
             // Set work area
             activeComp.workAreaStart = loopValue;
             activeComp.workAreaDuration = (outpoint - loopValue) -  activeComp.frameDuration;
-            addBlend(loopLayer, loopValue, dissolveValue);
+            addBlend(activeComp, loopLayer, loopValue, dissolveValue);
           }
         }
         else
