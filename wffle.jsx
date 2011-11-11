@@ -214,11 +214,11 @@
               pnl: Panel { orientation: 'column', alignChildren: 'right', text: 'Options', \
                 loopPoint: Group { orientation: 'row', \
                   st: StaticText { text: 'Loop Point:', helpTip: 'Set loop point time.' }, \
-                  loopptET: EditText { characters: 10, justify: 'left', helpTip: 'Set loop point time.'}  \
+                  loopptET: EditText { characters: 10, justify: 'left', helpTip: 'Set loop point time. If your time display is in frames, enter frames. If your time display is seconds, enter seconds. '}  \
                  }, \
                  dissolve: Group { orientation: 'row', \
                          st: StaticText { text: 'Dissolve:', helpTip: 'Set dissolve length.' }, \
-                         dissolveET: EditText { characters: 10, justify: 'left', helpTip: 'Set dissolve length.' } \
+                         dissolveET: EditText { characters: 10, justify: 'left', helpTip: 'Set dissolve length. If your time display is in frames, enter frames. If your time display is seconds, enter seconds. '} \
                  } \
               }, \
               buttons: Group { orientation: 'row', spacing: 61, \
