@@ -1,4 +1,4 @@
-//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+﻿//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 // Name: Wffle
 // Author: Erwin Santacruz
 // Date: 10.13.11
@@ -70,7 +70,7 @@
     function GetLoopPoint()
     {
       // Determine time display
-      var timeDisplay = app.project.timecodeDisplayType;
+      var timeDisplay = app.project.timeDisplayType;
       var tx = parseFloat(this.text);
 
       if (timeDisplay == timecode)
@@ -214,11 +214,11 @@
               pnl: Panel { orientation: 'column', alignChildren: 'right', text: 'Options', \
                 loopPoint: Group { orientation: 'row', \
                   st: StaticText { text: 'Loop Point:', helpTip: 'Set loop point time.' }, \
-                  loopptET: EditText { characters: 10, justify: 'left', helpTip: 'Set loop point time. If your time display is in frames, enter frames. If your time display is seconds, enter seconds. '}  \
+                  loopptET: EditText { characters: 10, justify: 'left', helpTip: 'Set loop point time.'}  \
                  }, \
                  dissolve: Group { orientation: 'row', \
                          st: StaticText { text: 'Dissolve:', helpTip: 'Set dissolve length.' }, \
-                         dissolveET: EditText { characters: 10, justify: 'left', helpTip: 'Set dissolve length. If your time display is in frames, enter frames. If your time display is seconds, enter seconds. '} \
+                         dissolveET: EditText { characters: 10, justify: 'left', helpTip: 'Set dissolve length.' } \
                  } \
               }, \
               buttons: Group { orientation: 'row', spacing: 61, \
