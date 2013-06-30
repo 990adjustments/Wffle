@@ -72,12 +72,16 @@
       // Determine time display
       var timeDisplay = app.project.timeDisplayType;
       var tx = parseFloat(this.text);
+      var item = app.project.activeItem;
 
-      if (timeDisplay == timecode)
+      if (timeDisplay == timecode){
+        //loopValueTx = tx * item.frameRate;
         loopValueTx = tx;
+      }
       else if (timeDisplay == frames) {
-        var item = app.project.activeItem;
-        loopValueTx = tx * item.frameDuration;
+        // Convert from frames to seconds
+        loopValueTx = tx / item.frameRate;
+        //loopValueTx = tx;
       }
     }
 
@@ -149,15 +153,16 @@
           blendLayer.enabled = false;
 
           // Shift trimmed layer to end
-          var outpoint = blendLayer.outPoint
-          // Subtract one frame from loop point given
+          var outpoint = blendLayer.outPoint;
+          // Subtract one second from loop point given.
           var loopPoint = loopValue - activeComp.frameDuration;
           blendLayer.inPoint = loopPoint;
-          blendLayer.startTime =  outpoint - loopValue;
+          blendLayer.startTime =  (outpoint - loopPoint) - activeComp.frameDuration;
 
           // Set work area
           activeComp.workAreaStart = loopValue;
-          activeComp.workAreaDuration = (outpoint - loopValue) -  activeComp.frameDuration;
+          // frames = frame count - (total seconds * frame rate)
+          activeComp.workAreaDuration = (activeComp.duration - loopValue) - activeComp.frameDuration;
 
           // Grab the top layer
           var loopLayer = activeComp.layer(1);
@@ -184,13 +189,14 @@
             var outpoint = blendLayer.outPoint;
             // Subtract one frame from loop point given
             var loopPoint = loopValue - activeComp.frameDuration;
-            blendLayer.inPoint = loopPoint
-            blendLayer.startTime =  outpoint - loopValue;
+            blendLayer.inPoint = loopPoint;
+            blendLayer.startTime =  (outpoint - loopPoint) - activeComp.frameDuration;
             blendLayer.moveAfter(loopLayer);
 
             // Set work area
             activeComp.workAreaStart = loopValue;
-            activeComp.workAreaDuration = (outpoint - loopValue) -  activeComp.frameDuration;
+            activeComp.workAreaDuration = (activeComp.duration - loopValue) - activeComp.frameDuration;
+
             addBlend(activeComp, loopLayer, loopValue, dissolveValue);
           }
         }

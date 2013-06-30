@@ -1,6 +1,6 @@
 Wffle
 ======
-**1.0 for After Effects**
+**1.0.2 for After Effects**
 
 Welcome
 -------
@@ -50,12 +50,20 @@ values in seconds. If your Display Style is in frames, then enter the values as 
 Version History
 ---------------
 
+Wffle 1.0.2
+
+ * Fixed issues with using frames vs. timecode in comps.
+
+Wffle 1.0.1
+
+ * Fixed method name from timcodeDisplayType to timeDisplayType which was renamed in API.
+
 Wffle 1.0
 
  * First "official" release!
 
-Contact, Suggestions, Bugs, Spam
---------------------------------
+Contact, Suggestions, Bugs,
+---------------------------
 
 E-Mail: hi@990adjustments.com  
 Web: [http://www.990adjustments.com/](http://www.990adjustments.com/)  
